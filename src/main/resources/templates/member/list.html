@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<style>
+	thead>tr>:nth-of-type(1) {
+		width: 800px;
+	}
+</style>
+
+<th:block th:replace="~{/layout/basic::setContent(~{this::content})}">
+
+	<th:block th:fragment="content">
+
+		<h1>회원 목록</h1>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th scope="col">아이디</th>
+					<th scope="col">이름</th>
+					<th scope="col">등록일</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="dto:${list}">
+					<th scope="row">
+						<a th:href="@{/member/read(id=${dto.id},page=${list.number+1})}">
+							[[${dto.id}]]
+						</a>
+					</th>
+					<td>[[${dto.name}]]</td>
+					<td>[[${#temporals.format(dto.regDate,'yyyy/MM/dd')}]]</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<ul class="pagination h-100 justify-content-center align-items-center">
+			<!--number.sequence 앞에 # / 앞에 #을 붙히지 않아 문구 에러-->
+			<th:block th:each="page : ${#numbers.sequence(1, list.totalPages)}">
+				<!--class명을 타임리프를 사용하여 버튼의 상태를 설정함 => 'page-item ' + 'status' 설정 / + 대신 : 를 사용하여 문구 에러-->
+				<li th:class="'page-item ' + ${(list.number+1)==page?'active':''}">
+					<a class="page-link" th:href="@{/member/list(page=${page})}">
+						[[${page}]]
+					</a>
+				</li>
+
+			</th:block>
+
+		</ul>
+
+		<script th:inline="javascript">
+			$(document).ready(function () {
+				var msg = [[${msg}]];
+				if (msg != null) {
+					alert(msg);
+				}
+			})
+		</script>
+	</th:block>
+
+</th:block>
